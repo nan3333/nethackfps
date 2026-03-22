@@ -221,6 +221,7 @@ function handleKeyImmediate(key: string, e: KeyboardEvent): void {
     case '?': gs.phase = 'help'; break;
     case ',': gs.tryPickup(); break;
     case '.': case ' ': gs.processTurn(); break;
+    case 'v': case 'V': pitchInvert = !pitchInvert; break;
     case '>': gs.tryDescend(); break;
     case '<': gs.tryAscend(); break;
     case 'z': {
@@ -267,7 +268,8 @@ function handleInventoryKey(key: string): void {
 // ── Mouse / Pointer Lock ──────────────────────────────────────────────────────
 
 let pointerLocked = false;
-let pitchRows = 0;  // accumulated pitch (in row units)
+let pitchRows = 0;      // accumulated pitch (in row units)
+let pitchInvert = false;
 
 // The browser spec forbids re-acquiring pointer lock after Escape — so instead
 // we use the Keyboard Lock API (Chrome/Edge) to intercept Escape ourselves
@@ -297,7 +299,7 @@ document.addEventListener('pointerlockchange', () => {
 document.addEventListener('mousemove', e => {
   if (!pointerLocked || gs.phase !== 'playing') return;
   gs.player.angle += e.movementX * MOUSE_YAW_SENS;
-  pitchRows       += e.movementY * MOUSE_PITCH_SENS;
+  pitchRows       += e.movementY * MOUSE_PITCH_SENS * (pitchInvert ? -1 : 1);
 });
 
 // ── Resize ────────────────────────────────────────────────────────────────────
@@ -424,7 +426,7 @@ function render(): void {
       drawStatus(uiRenderer, gs);
 
       if (gs.phase === 'inventory') drawInventory(uiRenderer, gs.player, invIdx);
-      if (gs.phase === 'help')      drawHelp(uiRenderer);
+      if (gs.phase === 'help')      drawHelp(uiRenderer, pitchInvert);
       break;
     }
   }

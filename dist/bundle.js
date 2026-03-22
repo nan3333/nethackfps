@@ -4127,7 +4127,7 @@
     const again = "Press [Enter] to play again";
     renderer.print(Math.floor((renderer.cols - again.length) / 2), cr + 4, again, GRAY);
   }
-  function drawHelp(renderer) {
+  function drawHelp(renderer, invertY = false) {
     const W = Math.min(72, renderer.cols - 4);
     const H = 32;
     const sc = Math.floor((renderer.cols - W) / 2);
@@ -4163,6 +4163,7 @@
       [".", "Wait one turn"],
       [">", "Descend stairs"],
       ["<", "Ascend stairs (need Amulet on lvl 1)"],
+      ["V", `Invert Y-axis [${invertY ? "ON" : "OFF"}]`],
       ["?", "This help screen"],
       ["Q", "Quit"]
     ];
@@ -4745,6 +4746,10 @@
       case " ":
         gs.processTurn();
         break;
+      case "v":
+      case "V":
+        pitchInvert = !pitchInvert;
+        break;
       case ">":
         gs.tryDescend();
         break;
@@ -4808,6 +4813,7 @@
   }
   var pointerLocked = false;
   var pitchRows = 0;
+  var pitchInvert = false;
   function acquirePointerLock() {
     canvas.requestPointerLock();
     const kb = navigator.keyboard;
@@ -4829,7 +4835,7 @@
   document.addEventListener("mousemove", (e) => {
     if (!pointerLocked || gs.phase !== "playing") return;
     gs.player.angle += e.movementX * MOUSE_YAW_SENS;
-    pitchRows += e.movementY * MOUSE_PITCH_SENS;
+    pitchRows += e.movementY * MOUSE_PITCH_SENS * (pitchInvert ? -1 : 1);
   });
   function resize() {
     const w = Math.round(window.innerWidth * 0.8);
@@ -4957,7 +4963,7 @@
         drawMessages(uiRenderer, gs.messages, gs.turns - gs.lastMsgTurn);
         drawStatus(uiRenderer, gs);
         if (gs.phase === "inventory") drawInventory(uiRenderer, gs.player, invIdx);
-        if (gs.phase === "help") drawHelp(uiRenderer);
+        if (gs.phase === "help") drawHelp(uiRenderer, pitchInvert);
         break;
       }
     }

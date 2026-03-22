@@ -301,7 +301,7 @@ export function drawWin(renderer: CanvasRenderer, gs: GameState): void {
 
 // ── Help overlay ──────────────────────────────────────────────────────────────
 
-export function drawHelp(renderer: CanvasRenderer): void {
+export function drawHelp(renderer: CanvasRenderer, invertY = false): void {
   const W  = Math.min(72, renderer.cols - 4);
   const H  = 32;
   const sc = Math.floor((renderer.cols - W) / 2);
@@ -345,6 +345,7 @@ export function drawHelp(renderer: CanvasRenderer): void {
     ['.',  'Wait one turn'],
     ['>',  'Descend stairs'],
     ['<',  'Ascend stairs (need Amulet on lvl 1)'],
+    ['V',  `Invert Y-axis [${invertY ? 'ON' : 'OFF'}]`],
     ['?',  'This help screen'],
     ['Q',  'Quit'],
   ];
