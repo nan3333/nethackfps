@@ -1,0 +1,13 @@
+{
+  "name": "nethackfps-web",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --outfile=dist/bundle.js --sourcemap",
+    "watch": "esbuild src/main.ts --bundle --outfile=dist/bundle.js --sourcemap --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.0",
+    "typescript": "^5.4.0"
+  }
+}
